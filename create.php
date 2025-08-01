@@ -5,12 +5,14 @@ $mensaje = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener datos del formulario
-    $nombre = $conn->real_escape_string($_POST['nombre']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $telefono = $conn->real_escape_string($_POST['telefono']);
+$nombre = $conn->real_escape_string($_POST['nombre']);
+$email = $conn->real_escape_string($_POST['email']);
+$telefono = $conn->real_escape_string($_POST['telefono']);
+$password = password_hash($_POST['password'], PASSWORD_DEFAULT); // ← Encriptar
 
     // Insertar en la base de datos
-    $sql = "INSERT INTO usuarios (nombre, email, telefono) VALUES ('$nombre', '$email', '$telefono')";
+        $sql = "INSERT INTO usuarios (nombre, email, telefono, password) 
+        VALUES ('$nombre', '$email', '$telefono', '$password')";
 
     if ($conn->query($sql) === TRUE) {
         $mensaje = "Usuario guardado exitosamente.";
@@ -40,6 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label>Email:</label><br />
         <input type="email" name="email" required /><br /><br />
+
+        <label for="password">Contraseña:</label><br /><br />
+  <input type="password" name="password" id="password" required><br /><br />
 
         <label>Teléfono:</label><br />
         <input type="text" name="telefono" required /><br /><br />
