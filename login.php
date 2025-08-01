@@ -10,7 +10,7 @@ if (isset($_SESSION['usuario'])) {
 $mensaje = "";
 if (isset($_GET['error'])) {
     $mensaje = "❌ Correo o contraseña incorrectos.";
-}
+
 ?>
 
 <!DOCTYPE html>

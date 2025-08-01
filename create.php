@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO usuarios (nombre, email, telefono, password) 
             VALUES ('$nombre', '$email', '$telefono', '$password')";
 
+
     if ($conn->query($sql) === TRUE) {
         $mensaje = "✅ Usuario guardado exitosamente.";
     } else {
@@ -134,6 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="read.php"><button type="button">Volver a la lista</button></a>
         </div>
     </div>
+
 
 </body>
 </html>
