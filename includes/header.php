@@ -15,6 +15,7 @@ if (session_status() == PHP_SESSION_NONE) {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f6f9;
+
         }
 
         header {
@@ -25,6 +26,7 @@ if (session_status() == PHP_SESSION_NONE) {
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
         }
 
         header h2 {
@@ -57,6 +59,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
         .user-info span {
             font-weight: 500;
+
         }
     </style>
 </head>
@@ -75,4 +78,5 @@ if (session_status() == PHP_SESSION_NONE) {
             <?php endif; ?>
         </nav>
     </header>
+
 

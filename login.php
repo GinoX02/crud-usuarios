@@ -9,8 +9,8 @@ if (isset($_SESSION['usuario'])) {
 
 $mensaje = "";
 if (isset($_GET['error'])) {
-    $mensaje = "Correo o contraseña incorrectos.";
-}
+    $mensaje = "❌ Correo o contraseña incorrectos.";
+
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +55,7 @@ if (isset($_GET['error'])) {
             font-weight: bold;
             margin-bottom: 5px;
             color: #444;
+
         }
 
         input[type="email"],
@@ -76,16 +77,43 @@ if (isset($_GET['error'])) {
             cursor: pointer;
             transition: background-color 0.3s ease;
             text-align: left; /* Alinea el texto del botón a la izquierda */
+
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        .error-message {
-            color: #e74c3c;
-            font-weight: 500;
+
+        .mensaje-error {
+            text-align: center;
+            margin-bottom: 15px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .registro-opcion {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .registro-opcion p {
             margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .registro-opcion button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .registro-opcion button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
@@ -111,5 +139,6 @@ if (isset($_GET['error'])) {
             <button type="submit">Entrar</button>
         </form>
     </div>
+
 </body>
 </html>
