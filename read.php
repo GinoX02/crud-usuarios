@@ -1,8 +1,20 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit();
+}
+
 include("db/conexion.php");
 
-$sql = "SELECT * FROM usuarios";
+$busqueda = "";
+if (isset($_GET['buscar'])) {
+    $busqueda = $conn->real_escape_string($_GET['buscar']);
+    $sql = "SELECT * FROM usuarios WHERE nombre LIKE '%$busqueda%' OR email LIKE '%$busqueda%'";
+} else {
+    $sql = "SELECT * FROM usuarios";
+}
 $resultado = $conn->query($sql);
 
 // Guardamos los usuarios en un array para JS (json_encode)
@@ -17,6 +29,7 @@ while ($fila = $resultado->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <title>Lista de Usuarios</title>
+    <link rel="stylesheet" href="css/estilos.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -79,6 +92,7 @@ while ($fila = $resultado->fetch_assoc()) {
         th, td {
             padding: 15px;
             border-bottom: 1px solid #eee;
+
             text-align: center;
         }
 
@@ -100,6 +114,7 @@ while ($fila = $resultado->fetch_assoc()) {
 
         a:hover {
             text-decoration: underline;
+
         }
 
         .acciones a {
@@ -131,6 +146,7 @@ while ($fila = $resultado->fetch_assoc()) {
 
         .add-button:hover {
             background-color: #27ae60;
+
         }
     </style>
 </head>
@@ -207,6 +223,7 @@ while ($fila = $resultado->fetch_assoc()) {
             alert(`Usuario al azar:\n\nNombre: ${user.nombre}\nCorreo: ${user.email}`);
         });
     </script>
+
 
 </body>
 </html>

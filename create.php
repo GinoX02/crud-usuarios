@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO usuarios (nombre, email, telefono, password) 
             VALUES ('$nombre', '$email', '$telefono', '$password')";
 
+
     if ($conn->query($sql) === TRUE) {
         $mensaje = "✅ Usuario guardado exitosamente.";
     } else {
@@ -28,7 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="css/estilos.css" />
     <style>
         body {
-            background-color: #f4f6f9;
+
+          background-color: #f4f6f9;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
@@ -49,12 +51,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         h2 {
             margin-bottom: 20px;
+
             color: #333;
         }
 
         label {
             font-weight: bold;
             color: #444;
+
         }
 
         input[type="text"],
@@ -62,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="password"] {
             width: 100%;
             padding: 10px;
+
             margin-top: 6px;
             margin-bottom: 16px;
             border: 1px solid #ccc;
@@ -103,10 +108,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="submit"]:hover,
         .volver-btn:hover {
             background-color: #0056b3;
+
         }
     </style>
 </head>
 <body>
+
     <div class="form-container">
         <h2>📝 Registrar Usuario</h2>
 
@@ -135,5 +142,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <a href="read.php" class="volver-btn">↩ Volver a la lista</a>
         <a href="index.php" class="volver-btn">🏡 Volver al inicio</a>
     </div>
+
 </body>
 </html>
