@@ -14,13 +14,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($resultado && $resultado->num_rows === 1) {
         $usuario = $resultado->fetch_assoc();
 
-        // Comparar contraseñas (texto plano por ahora)
-        if (password_verify($password, $usuario['password']))
- {
+        // Comparar contraseñas (hash)
+        if (password_verify($password, $usuario['password'])) {
             $_SESSION['usuario'] = [
                 'id' => $usuario['id'],
                 'nombre' => $usuario['nombre'],
-                'rol' => $usuario['rol']
+                'email' => $usuario['email'],
+                'telefono' => $usuario['telefono'],
+                'rol' => isset($usuario['rol']) ? $usuario['rol'] : 'usuario'  // Por si no hay rol
             ];
             header("Location: ../index.php");
             exit();

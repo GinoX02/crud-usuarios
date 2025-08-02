@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('db/conexion.php');
 
 $mensaje = "";
@@ -8,9 +9,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $conn->real_escape_string($_POST['email']);
     $telefono = $conn->real_escape_string($_POST['telefono']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $rol = 'user'; // rol por defecto
 
-    $sql = "INSERT INTO usuarios (nombre, email, telefono, password) 
-            VALUES ('$nombre', '$email', '$telefono', '$password')";
+    $sql = "INSERT INTO usuarios (nombre, email, telefono, password, rol) 
+            VALUES ('$nombre', '$email', '$telefono', '$password', '$rol')";
 
 
     if ($conn->query($sql) === TRUE) {
@@ -29,29 +31,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="css/estilos.css" />
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9f9;
-            padding: 40px;
+
+          background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         .form-container {
-            width: 400px;
-            margin: auto;
             background-color: #fff;
-            padding: 30px;
+            padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: left;
         }
 
         h2 {
-            text-align: center;
+            margin-bottom: 20px;
+
             color: #333;
         }
 
         label {
-            display: block;
-            margin-top: 10px;
             font-weight: bold;
+            color: #444;
+
         }
 
         input[type="text"],
@@ -59,67 +68,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="password"] {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
-            border-radius: 6px;
+
+            margin-top: 6px;
+            margin-bottom: 16px;
             border: 1px solid #ccc;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            margin-top: 20px;
-            border: none;
             border-radius: 6px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
+            font-size: 15px;
         }
 
         .mensaje {
-            text-align: center;
+            color: #28a745;
             margin-bottom: 15px;
-            color: green;
             font-weight: bold;
         }
 
-        .back-button {
-            display: block;
-            margin: 20px auto 0;
-            text-align: center;
+        .error {
+            color: #dc3545;
         }
 
-        .back-button button {
-            background-color: #6c757d;
+        input[type="submit"],
+        .volver-btn {
+            background-color: #007bff;
             color: white;
-            padding: 8px 16px;
+            padding: 12px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
+            margin-top: 10px;
+            text-align: center;
+            display: inline-block;
         }
 
-        .back-button button:hover {
-            background-color: #5a6268;
+        .volver-btn {
+            background-color: #6c757d;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+
+        input[type="submit"]:hover,
+        .volver-btn:hover {
+            background-color: #0056b3;
+
         }
     </style>
 </head>
 <body>
 
     <div class="form-container">
-        <h2>Registrar Usuario</h2>
+        <h2>📝 Registrar Usuario</h2>
 
         <?php if ($mensaje): ?>
-            <p class="mensaje"><?php echo $mensaje; ?></p>
+            <p class="mensaje <?= str_starts_with($mensaje, '❌') ? 'error' : '' ?>">
+                <?= htmlspecialchars($mensaje) ?>
+            </p>
         <?php endif; ?>
 
         <form action="create.php" method="POST">
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" id="nombre" required />
 
-            <label for="email">Correo:</label>
+            <label for="email">Email:</label>
             <input type="email" name="email" id="email" required />
 
             <label for="password">Contraseña:</label>
@@ -131,11 +140,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" value="Guardar" />
         </form>
 
-        <div class="back-button">
-            <a href="read.php"><button type="button">Volver a la lista</button></a>
-        </div>
+        <?php if (isset($_SESSION['usuario'])): ?>
+            <a href="read.php" class="volver-btn">↩ Volver a la lista</a>
+            <a href="index.php" class="volver-btn">🏡 Volver al inicio</a>
+        <?php endif; ?>
     </div>
-
 
 </body>
 </html>
