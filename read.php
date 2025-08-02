@@ -22,6 +22,11 @@ $usuarios = [];
 while ($fila = $resultado->fetch_assoc()) {
     $usuarios[] = $fila;
 }
+
+// Determinar el rol del usuario actual
+$rol = $_SESSION['usuario']['rol'] ?? null;
+$id_usuario_actual = $_SESSION['usuario']['id'] ?? null;
+$logueado = isset($_SESSION['usuario']);
 ?>
 
 <!DOCTYPE html>
@@ -133,7 +138,7 @@ while ($fila = $resultado->fetch_assoc()) {
         .add-button {
             display: block;
             width: fit-content;
-            margin: 0 auto 30px;
+            margin: 0 auto 15px;
             background-color: #2ecc71;
             color: white;
             padding: 12px 20px;
@@ -165,7 +170,9 @@ while ($fila = $resultado->fetch_assoc()) {
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Correo</th>
-                <th>Acciones</th>
+                <?php if ($logueado): ?>
+                    <th>Acciones</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -174,21 +181,27 @@ while ($fila = $resultado->fetch_assoc()) {
                 <td><?php echo $fila["id"]; ?></td>
                 <td><?php echo htmlspecialchars($fila["nombre"]); ?></td>
                 <td><?php echo htmlspecialchars($fila["email"]); ?></td>
+                <?php if ($logueado): ?>
                 <td class="acciones">
-                    <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['id'] == $fila['id']): ?>
+                    <?php if ($id_usuario_actual == $fila['id']): ?>
                         <a href="perfil.php">👤 Perfil</a>
-                    <?php else: ?>
+                    <?php elseif ($rol === 'admin'): ?>
                         <a href="update.php?id=<?php echo $fila['id']; ?>">✏️ Editar</a>
+                        <a href="delete.php?id=<?php echo $fila['id']; ?>" onclick="return confirm('¿Eliminar al usuario <?php echo addslashes($fila['nombre']); ?>?');">🗑️ Eliminar</a>
                     <?php endif; ?>
-                    <a href="delete.php?id=<?php echo $fila['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar al usuario <?php echo addslashes($fila['nombre']); ?>?');">🗑️ Eliminar</a>
                 </td>
+                <?php endif; ?>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 
-    <a href="create.php" class="add-button">➕ Agregar nuevo usuario</a>
-    <a href="index.php" class="add-button">🏡 Volver al inicio</a>
+    <?php if ($logueado): ?>
+        <?php if ($rol === 'admin'): ?>
+            <a href="create.php" class="add-button">➕ Agregar nuevo usuario</a>
+        <?php endif; ?>
+        <a href="index.php" class="add-button">🏡 Volver al inicio</a>
+    <?php endif; ?>
 
     <script>
         const usuarios = <?php echo json_encode($usuarios); ?>;
@@ -199,7 +212,6 @@ while ($fila = $resultado->fetch_assoc()) {
         searchInput.addEventListener('input', function() {
             const filtro = this.value.toLowerCase();
 
-            // Recorrer filas de la tabla
             Array.from(usuariosTable.rows).forEach(row => {
                 const nombre = row.cells[1].textContent.toLowerCase();
                 const email = row.cells[2].textContent.toLowerCase();

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('db/conexion.php');
 
 $mensaje = "";
@@ -8,9 +9,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $conn->real_escape_string($_POST['email']);
     $telefono = $conn->real_escape_string($_POST['telefono']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $rol = 'user'; // rol por defecto
 
-    $sql = "INSERT INTO usuarios (nombre, email, telefono, password) 
-            VALUES ('$nombre', '$email', '$telefono', '$password')";
+    $sql = "INSERT INTO usuarios (nombre, email, telefono, password, rol) 
+            VALUES ('$nombre', '$email', '$telefono', '$password', '$rol')";
 
 
     if ($conn->query($sql) === TRUE) {
@@ -94,15 +96,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
-            text-align: left;
+            text-align: center;
+            display: inline-block;
         }
 
         .volver-btn {
             background-color: #6c757d;
-            margin-top: 20px;
-            display: inline-block;
+            margin-top: 10px;
             text-decoration: none;
-            text-align: center;
         }
 
         input[type="submit"]:hover,
@@ -139,8 +140,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" value="Guardar" />
         </form>
 
-        <a href="read.php" class="volver-btn">↩ Volver a la lista</a>
-        <a href="index.php" class="volver-btn">🏡 Volver al inicio</a>
+        <?php if (isset($_SESSION['usuario'])): ?>
+            <a href="read.php" class="volver-btn">↩ Volver a la lista</a>
+            <a href="index.php" class="volver-btn">🏡 Volver al inicio</a>
+        <?php endif; ?>
     </div>
 
 </body>
