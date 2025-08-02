@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit();
@@ -15,6 +16,12 @@ if (isset($_GET['buscar'])) {
     $sql = "SELECT * FROM usuarios";
 }
 $resultado = $conn->query($sql);
+
+// Guardamos los usuarios en un array para JS (json_encode)
+$usuarios = [];
+while ($fila = $resultado->fetch_assoc()) {
+    $usuarios[] = $fila;
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,121 +32,198 @@ $resultado = $conn->query($sql);
     <link rel="stylesheet" href="css/estilos.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
 
-        header {
+        h2 {
             text-align: center;
-            padding: 20px;
-            background-color: #003366;
+            margin: 30px 0;
+            color: #2c3e50;
+        }
+
+        .search-container {
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #searchInput {
+            width: 70%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #randomBtn {
+            background-color: #e67e22;
+            border: none;
             color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .contenedor {
-            width: 80%;
-            margin: 0 auto;
-            margin-top: 20px;
-        }
-
-        .buscador {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            padding: 8px;
-            width: 250px;
+        #randomBtn:hover {
+            background-color: #d35400;
         }
 
         table {
-            width: 100%;
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto 40px;
             border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
 
         th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+
             text-align: center;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f0f8ff;
         }
 
         a {
             text-decoration: none;
-            color: #0056b3;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+
         }
 
         .acciones a {
             margin: 0 5px;
-        }
-
-        .navegacion {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: #007BFF;
-            color: white;
+            padding: 6px 12px;
+            background-color: #ecf0f1;
             border-radius: 5px;
+            transition: 0.2s;
+            display: inline-block;
         }
 
-        .btn:hover {
-            background-color: #0056b3;
+        .acciones a:hover {
+            background-color: #d0dce5;
+        }
+
+        .add-button {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 30px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-button:hover {
+            background-color: #27ae60;
+
         }
     </style>
 </head>
 <body>
-    <header>
-        <h2>Visor de Usuarios</h2>
-    </header>
 
-    <div class="contenedor">
-        <div class="buscador">
-            <form method="GET" action="read.php">
-                <input type="text" name="buscar" placeholder="Buscar por nombre o correo" value="<?= htmlspecialchars($busqueda) ?>">
-                <button type="submit" class="btn">Buscar</button>
-                <a href="read.php" class="btn">Limpiar</a>
-            </form>
-        </div>
+    <h2>👥 Lista de Usuarios</h2>
 
-        <?php if ($resultado && $resultado->num_rows > 0): ?>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Acciones</th>
-                </tr>
-                <?php while($fila = $resultado->fetch_assoc()): ?>
-                <tr>
-                    <td><?= $fila["id"] ?></td>
-                    <td><?= $fila["nombre"] ?></td>
-                    <td><?= $fila["email"] ?></td>
-                    <td class="acciones">
-                        <a href="update.php?id=<?= $fila['id'] ?>">Editar</a> /
-                        <a href="delete.php?id=<?= $fila['id'] ?>" onclick="return confirm('¿Estás seguro de eliminar al usuario <?= $fila['nombre'] ?>?');">Eliminar</a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            </table>
-        <?php else: ?>
-            <p style="text-align:center;">No se encontraron usuarios.</p>
-        <?php endif; ?>
-
-        <div class="navegacion">
-            <a href="create.php" class="btn">➕ Agregar nuevo usuario</a>
-            <a href="index.php" class="btn">🏠 Inicio</a>
-            <a href="logout.php" class="btn">🔓 Cerrar sesión</a>
-        </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o correo...">
+        <button id="randomBtn">🎲 Usuario al azar</button>
     </div>
+
+    <table id="usuariosTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($usuarios as $fila): ?>
+            <tr>
+                <td><?php echo $fila["id"]; ?></td>
+                <td><?php echo htmlspecialchars($fila["nombre"]); ?></td>
+                <td><?php echo htmlspecialchars($fila["email"]); ?></td>
+                <td class="acciones">
+                    <?php if (isset($_SESSION['usuario']) && $_SESSION['usuario']['id'] == $fila['id']): ?>
+                        <a href="perfil.php">👤 Perfil</a>
+                    <?php else: ?>
+                        <a href="update.php?id=<?php echo $fila['id']; ?>">✏️ Editar</a>
+                    <?php endif; ?>
+                    <a href="delete.php?id=<?php echo $fila['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar al usuario <?php echo addslashes($fila['nombre']); ?>?');">🗑️ Eliminar</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <a href="create.php" class="add-button">➕ Agregar nuevo usuario</a>
+    <a href="index.php" class="add-button">🏡 Volver al inicio</a>
+
+    <script>
+        const usuarios = <?php echo json_encode($usuarios); ?>;
+        const searchInput = document.getElementById('searchInput');
+        const usuariosTable = document.getElementById('usuariosTable').getElementsByTagName('tbody')[0];
+
+        // Función para filtrar tabla según búsqueda
+        searchInput.addEventListener('input', function() {
+            const filtro = this.value.toLowerCase();
+
+            // Recorrer filas de la tabla
+            Array.from(usuariosTable.rows).forEach(row => {
+                const nombre = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+
+                if (nombre.includes(filtro) || email.includes(filtro)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Función para usuario aleatorio
+        document.getElementById('randomBtn').addEventListener('click', () => {
+            if (usuarios.length === 0) {
+                alert('No hay usuarios para seleccionar.');
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * usuarios.length);
+            const user = usuarios[randomIndex];
+            alert(`Usuario al azar:\n\nNombre: ${user.nombre}\nCorreo: ${user.email}`);
+        });
+    </script>
+
+
 </body>
 </html>

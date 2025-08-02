@@ -18,57 +18,72 @@ if (isset($_GET['error'])) {
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/estilos.css">
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f2f2f2;
-            padding: 40px;
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         .login-container {
-            width: 400px;
-            margin: auto;
-            background-color: #fff;
-            padding: 30px;
+            background-color: white;
+            padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: left; /* Alinea el contenido a la izquierda */
         }
 
         h2 {
-            text-align: center;
+            margin-bottom: 20px;
             color: #333;
         }
 
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         label {
-            display: block;
-            margin-top: 10px;
             font-weight: bold;
+            margin-bottom: 5px;
+            color: #444;
+
         }
 
         input[type="email"],
         input[type="password"] {
-            width: 100%;
             padding: 10px;
-            margin-top: 5px;
             border-radius: 6px;
             border: 1px solid #ccc;
+            font-size: 15px;
+            width: 100%;
         }
 
         button {
-            width: 100%;
             background-color: #007bff;
             color: white;
-            padding: 10px;
-            margin-top: 20px;
+            padding: 12px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: left; /* Alinea el texto del botón a la izquierda */
+
         }
 
         button:hover {
             background-color: #0056b3;
         }
+
 
         .mensaje-error {
             text-align: center;
@@ -103,28 +118,26 @@ if (isset($_GET['error'])) {
     </style>
 </head>
 <body>
-
     <div class="login-container">
-        <h2>Iniciar Sesión</h2>
+        <h2>🔐 Iniciar Sesión</h2>
 
         <?php if ($mensaje): ?>
-            <p class="mensaje-error"><?= $mensaje ?></p>
+            <div class="error-message"><?= $mensaje ?></div>
         <?php endif; ?>
 
         <form action="includes/auth.php" method="POST">
-            <label for="email">Correo electrónico:</label>
-            <input type="email" name="email" id="email" required>
+            <div>
+                <label for="email">Correo electrónico:</label>
+                <input type="email" name="email" id="email" required>
+            </div>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" name="password" id="password" required>
+            <div>
+                <label for="password">Contraseña:</label>
+                <input type="password" name="password" id="password" required>
+            </div>
 
             <button type="submit">Entrar</button>
         </form>
-
-        <div class="registro-opcion">
-            <p>¿No tienes una cuenta?</p>
-            <button onclick="location.href='create.php'">📝 Crear Cuenta</button>
-        </div>
     </div>
 
 </body>
